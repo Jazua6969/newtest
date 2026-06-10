@@ -732,9 +732,7 @@ export function CommunityIntelligence() {
         )}
       </div>
 
-      {/* ========================================================================= */}
-      /* ASK QUESTION GLASSMORPHISM MODAL                                           */
-      /* ========================================================================= */
+
       {showAskModal && (
         <div className="fixed inset-0 bg-[#0F172A]/75 backdrop-blur-xs z-50 flex items-center justify-center p-4 transition-all">
           <div className="w-full max-w-4xl bg-white rounded-xl shadow-2xl overflow-hidden border animate-in fade-in zoom-in-95 duration-200 flex flex-col h-[90vh]" style={{ borderColor: 'var(--stone-ridge)' }}>
