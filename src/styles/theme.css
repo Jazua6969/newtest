@@ -201,4 +201,52 @@
     font-weight: var(--font-weight-normal);
     line-height: 1.5;
   }
+
+  /* Lenis Core Requirements */
+  html.lenis,
+  html.lenis-smooth {
+    height: auto;
+  }
+
+  .lenis.lenis-smooth [data-lenis-prevent] {
+    overscroll-behavior: contain;
+  }
+
+  .lenis.lenis-stopped {
+    overflow: hidden;
+  }
+
+  .lenis.lenis-smooth iframe {
+    pointer-events: none;
+  }
+
+  /* Global Scrollbar Hiding & Layout Safeness */
+  html, body {
+    height: auto !important;
+    min-height: 100% !important;
+  }
+
+  html {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+    overflow-x: hidden;
+    scroll-behavior: auto !important; /* Overwrite CSS smooth-scroll to prevent Lenis conflicts */
+  }
+
+  html::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, and Opera */
+  }
+
+  body {
+    overflow-x: hidden;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Premium Content Selection Styling */
+  ::selection {
+    background: var(--meridian-gold);
+    color: var(--abyss-ink);
+  }
 }

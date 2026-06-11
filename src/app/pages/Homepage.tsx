@@ -164,24 +164,36 @@ export function Homepage() {
                   <p className="text-sm" style={{ color: '#475569' }}>{atlasStates[atlasPhase].desc}</p>
                 </div>
 
-                {atlasPhase >= 1 && (
-                  <div>
+                <div 
+                  className="overflow-hidden transition-all duration-700 ease-in-out"
+                  style={{ 
+                    maxHeight: atlasPhase >= 1 ? '160px' : '0px', 
+                    opacity: atlasPhase >= 1 ? 1 : 0,
+                  }}
+                >
+                  <div className="pt-2">
                     <p className="text-xs font-medium mb-2" style={{ color: '#94A3B8' }}>Root Cause</p>
                     <div className="rounded-lg p-3 text-sm" style={{ background: 'rgba(194,65,12,0.06)', border: '1px solid rgba(194,65,12,0.15)', color: 'var(--topography-rust)' }}>
                       Clock source not propagated through synthesis — missing <code style={{ fontFamily: 'var(--font-mono)' }}>create_clock</code> constraint
                     </div>
                   </div>
-                )}
+                </div>
 
-                {atlasPhase >= 2 && (
-                  <>
+                <div 
+                  className="overflow-hidden transition-all duration-700 ease-in-out"
+                  style={{ 
+                    maxHeight: atlasPhase >= 2 ? '300px' : '0px', 
+                    opacity: atlasPhase >= 2 ? 1 : 0,
+                  }}
+                >
+                  <div className="pt-2 space-y-3">
                     <ConfidenceMeter score={94} />
                     <div className="rounded-lg p-3 text-sm" style={{ background: 'rgba(212,175,55,0.08)', border: '1px solid rgba(212,175,55,0.2)' }}>
                       <p className="font-medium mb-1" style={{ color: 'var(--meridian-gold)' }}>Recommended Fix</p>
                       <p style={{ color: '#475569' }}>Add clock constraint to SDC file before running CTS. Seen 2,847 times — 96% fix rate.</p>
                     </div>
-                  </>
-                )}
+                  </div>
+                </div>
               </div>
             </div>
           </div>
