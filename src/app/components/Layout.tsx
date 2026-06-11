@@ -4,6 +4,12 @@ import { Footer } from './Footer';
 import { useEffect, useState, useRef } from 'react';
 import Lenis from 'lenis';
 import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { WebGLBackground } from './WebGLBackground';
+import { CustomCursor } from './CustomCursor';
+import { ScrollTrack } from './ScrollTrack';
+
+gsap.registerPlugin(ScrollTrigger);
 
 export function Layout() {
   const location = useLocation();
@@ -12,40 +18,15 @@ export function Layout() {
   const isLoginPage = location.pathname === '/login';
 
   const [isPreloading, setIsPreloading] = useState(true);
-  const transitionContainerRef = useRef<HTMLDivElement>(null);
   const preloaderContainerRef = useRef<HTMLDivElement>(null);
   const lenisRef = useRef<Lenis | null>(null);
 
-  // 1. Initial Preloader & Lenis Setup
+  // 1. Initial Preloader (runs once on mount)
   useEffect(() => {
-    // Initialize Lenis
-    if (!isAtlasWorkspace) {
-      const lenis = new Lenis({
-        duration: 1.2,
-        easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), // easeOutExpo
-        orientation: 'vertical',
-        gestureOrientation: 'vertical',
-        smoothWheel: true,
-        wheelMultiplier: 1,
-        touchMultiplier: 2,
-      });
-      lenisRef.current = lenis;
-
-      const raf = (time: number) => {
-        lenis.raf(time);
-        requestAnimationFrame(raf);
-      };
-      requestAnimationFrame(raf);
-    }
-
-    // Play Initial GSAP Preloader
     const ctx = gsap.context(() => {
       const tl = gsap.timeline({
         onComplete: () => {
           setIsPreloading(false);
-          if (preloaderContainerRef.current) {
-            preloaderContainerRef.current.style.display = 'none';
-          }
         }
       });
 
@@ -74,110 +55,268 @@ export function Layout() {
 
     return () => {
       ctx.revert();
-      if (lenisRef.current) lenisRef.current.destroy();
+    };
+  }, []);
+
+  // 2. Lenis Setup (runs when isAtlasWorkspace changes)
+  useEffect(() => {
+    if (isAtlasWorkspace) {
+      if (lenisRef.current) {
+        lenisRef.current.destroy();
+        lenisRef.current = null;
+      }
+      return;
+    }
+
+    const lenis = new Lenis({
+      duration: 1.2,
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), // easeOutExpo
+      orientation: 'vertical',
+      gestureOrientation: 'vertical',
+      smoothWheel: true,
+      wheelMultiplier: 1,
+      touchMultiplier: 2,
+    });
+    lenisRef.current = lenis;
+
+    const raf = (time: number) => {
+      lenis.raf(time);
+      requestAnimationFrame(raf);
+    };
+    requestAnimationFrame(raf);
+
+    return () => {
+      if (lenisRef.current) {
+        lenisRef.current.destroy();
+        lenisRef.current = null;
+      }
     };
   }, [isAtlasWorkspace]);
 
-  // 2. Entrance Route Transition
+  // 3. Scroll to Top on Route Change
   useEffect(() => {
     if (isPreloading) return;
 
     if (lenisRef.current) {
       lenisRef.current.scrollTo(0, { immediate: true });
     }
-
-    const ctx = gsap.context(() => {
-      // Stagger slide panels out of view
-      gsap.fromTo('.transition-panel',
-        { yPercent: 0 },
-        {
-          yPercent: -100,
-          stagger: 0.05,
-          duration: 0.6,
-          ease: 'power3.inOut'
-        }
-      );
-    }, transitionContainerRef);
-
-    return () => ctx.revert();
   }, [location.pathname, isPreloading]);
 
-  // 3. Intercept Clicks for Exit Route Transition
+  // 4. Global Scroll Reveals (Headings character-reveal + Cards spring stagger)
   useEffect(() => {
-    const handleLinkClick = (e: MouseEvent) => {
-      const target = e.target as HTMLElement;
-      const anchor = target.closest('a');
+    if (isPreloading) return;
 
-      // Verify it's an internal link
-      if (
-        anchor &&
-        anchor.href &&
-        anchor.target !== '_blank' &&
-        anchor.origin === window.location.origin &&
-        !anchor.hasAttribute('download')
-      ) {
-        const targetPath = anchor.pathname + anchor.search + anchor.hash;
+    let scrollTriggers: ScrollTrigger[] = [];
 
-        // Only animate if navigating to a different page
-        if (targetPath !== location.pathname + location.search + location.hash) {
-          e.preventDefault();
+    const timer = setTimeout(() => {
+      const headings = document.querySelectorAll('main h1, main h2');
+      const cards = document.querySelectorAll('.scroll-reveal-card');
 
-          // Trigger Exit Transition
-          gsap.context(() => {
-            gsap.fromTo('.transition-panel',
-              { yPercent: 100 },
-              {
-                yPercent: 0,
-                stagger: 0.05,
-                duration: 0.5,
-                ease: 'power3.inOut',
-                onComplete: () => {
-                  navigate(targetPath);
-                }
+      // A. Setup Headings character-staggered reveals
+      headings.forEach((heading) => {
+        if (heading.getAttribute('data-split') === 'true') return;
+
+        // Save original children nodes list to process elements properly
+        const nodesList = Array.from(heading.childNodes);
+        heading.innerHTML = ''; // Clear text content
+        heading.setAttribute('data-split', 'true');
+
+        const charElements: HTMLElement[] = [];
+        const highlightCharElements: HTMLElement[] = [];
+        let cursorEl: HTMLElement | null = null;
+
+        nodesList.forEach((node) => {
+          if (node.nodeType === Node.TEXT_NODE) {
+            const textContent = node.textContent || '';
+            const words = textContent.split(' ');
+            words.forEach((word, wordIdx) => {
+              if (!word && wordIdx > 0) return;
+              const wordSpan = document.createElement('span');
+              wordSpan.className = 'inline-block whitespace-nowrap';
+
+              const chars = Array.from(word);
+              chars.forEach((char) => {
+                const charSpan = document.createElement('span');
+                charSpan.className = 'char-span inline-block opacity-0 translate-y-[40%]';
+                charSpan.textContent = char;
+                wordSpan.appendChild(charSpan);
+                charElements.push(charSpan);
+              });
+
+              heading.appendChild(wordSpan);
+              if (wordIdx < words.length - 1) {
+                heading.appendChild(document.createTextNode(' '));
               }
-            );
-          }, transitionContainerRef);
-        }
-      }
-    };
+            });
+          } else if (node.nodeType === Node.ELEMENT_NODE) {
+            const el = node as HTMLElement;
+            const isHighlight = el.classList.contains('highlight-word');
 
-    document.addEventListener('click', handleLinkClick);
-    return () => document.removeEventListener('click', handleLinkClick);
-  }, [location, navigate]);
+            const wordSpan = document.createElement('span');
+            wordSpan.className = `inline-block whitespace-nowrap relative ${el.className}`;
+
+            let bgHighlight: HTMLElement | null = null;
+            if (isHighlight) {
+              // Create a background block highlight
+              bgHighlight = document.createElement('span');
+              bgHighlight.className = 'absolute inset-0 bg-[#D4AF37]/15 scale-x-0 origin-left rounded-sm -z-1 px-1.5 -mx-1.5';
+              bgHighlight.style.transform = 'scaleX(0)'; // start at scale 0
+              wordSpan.appendChild(bgHighlight);
+            }
+
+            const textContent = el.textContent || '';
+            const chars = Array.from(textContent);
+            chars.forEach((char) => {
+              const charSpan = document.createElement('span');
+              charSpan.className = 'char-span inline-block opacity-0 translate-y-[40%]';
+              charSpan.textContent = char;
+              wordSpan.appendChild(charSpan);
+              charElements.push(charSpan);
+              if (isHighlight) {
+                highlightCharElements.push(charSpan);
+              }
+            });
+
+            if (isHighlight) {
+              // Blinking cursor
+              cursorEl = document.createElement('span');
+              cursorEl.className = 'typing-cursor inline-block w-[2px] h-[0.8em] bg-[#D4AF37] align-middle ml-0.5 opacity-0';
+              cursorEl.style.animation = 'blink 0.8s infinite';
+              wordSpan.appendChild(cursorEl);
+            }
+
+            heading.appendChild(wordSpan);
+          }
+        });
+
+        const tl = gsap.timeline({
+          scrollTrigger: {
+            trigger: heading,
+            start: 'top 88%',
+            toggleActions: 'play none none none',
+          }
+        });
+
+        // Loop through all child nodes of the heading in order (left-to-right)
+        const childSpans = Array.from(heading.children) as HTMLElement[];
+        childSpans.forEach((span, spanIdx) => {
+          const isHighlight = span.classList.contains('highlight-word');
+          const charSpans = Array.from(span.querySelectorAll('.char-span')) as HTMLElement[];
+          const isFirst = spanIdx === 0;
+
+          if (!isHighlight) {
+            // Normal word span: animate characters staggered
+            tl.to(charSpans, {
+              opacity: 1,
+              y: 0,
+              duration: 0.25,
+              stagger: 0.03,
+              ease: 'power2.out',
+            }, isFirst ? undefined : '-=0.15');
+          } else {
+            // Highlighted word span:
+            const bgHighlight = span.querySelector('.absolute') as HTMLElement | null;
+            const cursorEl = span.querySelector('.typing-cursor') as HTMLElement | null;
+
+            // Show cursor and scale background block
+            tl.to(cursorEl, { opacity: 1, duration: 0.05 }, isFirst ? undefined : '-=0.1')
+              .to(bgHighlight, { scaleX: 1, duration: 0.2, ease: 'power2.out' }, '-=0.05')
+              // Type characters out
+              .to(charSpans, {
+                opacity: 1,
+                y: 0,
+                duration: 0.25,
+                stagger: 0.04,
+                ease: 'none',
+              })
+              // Settle highlighted word
+              .add(() => {
+                gsap.to(cursorEl, { opacity: 0, duration: 0.2, delay: 0.4 });
+                if (bgHighlight) {
+                  gsap.to(bgHighlight, { opacity: 0, duration: 0.3, ease: 'power2.in', delay: 0.4 });
+                }
+                gsap.to(charSpans, {
+                  color: 'inherit',
+                  duration: 0.4,
+                  delay: 0.4,
+                });
+              });
+          }
+        });
+
+        if (tl.scrollTrigger) {
+          scrollTriggers.push(tl.scrollTrigger);
+        }
+      });
+
+      // B. Setup Cards spring/bounce stagger reveals
+      const cardContainers = new Set<Element>();
+      cards.forEach((card) => {
+        const parent = card.parentElement;
+        if (parent) cardContainers.add(parent);
+      });
+
+      cardContainers.forEach((container) => {
+        const containerCards = container.querySelectorAll('.scroll-reveal-card');
+        
+        gsap.set(containerCards, { opacity: 0, y: 70 });
+
+        const st = ScrollTrigger.create({
+          trigger: container,
+          start: 'top 88%',
+          onEnter: () => {
+            gsap.to(containerCards, {
+              opacity: 1,
+              y: 0,
+              duration: 1.0,
+              stagger: 0.1,
+              ease: 'back.out(1.4)', // Premium spring/bounce ease
+              overwrite: 'auto',
+            });
+          },
+          once: true,
+        });
+        scrollTriggers.push(st);
+      });
+
+      ScrollTrigger.refresh();
+    }, 150);
+
+    return () => {
+      clearTimeout(timer);
+      scrollTriggers.forEach((st) => st.kill());
+    };
+  }, [location.pathname, isPreloading]);
 
   return (
-    <div className="min-h-screen flex flex-col relative" style={{ fontFamily: 'var(--font-ui)', background: 'var(--canvas-bone)' }}>
+    <div className="min-h-screen flex flex-col relative" style={{ fontFamily: 'var(--font-ui)' }}>
+      <CustomCursor />
+      <WebGLBackground />
+      <ScrollTrack />
       {/* 1. INITIAL PRELOADER OVERLAY */}
-      <div 
-        ref={preloaderContainerRef} 
-        className="fixed inset-0 z-[99999] flex pointer-events-auto select-none"
-      >
-        {/* Curtains */}
-        <div className="absolute inset-0 flex">
-          {Array.from({ length: 4 }).map((_, i) => (
-            <div key={i} className="preloader-curtain flex-1 h-full bg-[#0F172A]" />
-          ))}
-        </div>
-        
-        {/* Brand Text Content */}
-        <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
-          <div className="overflow-hidden h-9">
-            <span className="preloader-logo block text-[#D4AF37] font-bold text-2xl tracking-widest font-mono">
-              ATLAS / TAPEITOUT
-            </span>
+      {isPreloading && (
+        <div 
+          ref={preloaderContainerRef} 
+          className="fixed inset-0 z-[99999] flex pointer-events-auto select-none"
+        >
+          {/* Curtains */}
+          <div className="absolute inset-0 flex">
+            {Array.from({ length: 4 }).map((_, i) => (
+              <div key={i} className="preloader-curtain flex-1 h-full bg-[#0F172A]" />
+            ))}
           </div>
-          <div className="preloader-line w-0 h-[2px] bg-[#D4AF37] mt-3" />
+          
+          {/* Brand Text Content */}
+          <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
+            <div className="overflow-hidden h-9">
+              <span className="preloader-logo block text-[#D4AF37] font-bold text-2xl tracking-widest font-mono">
+                ATLAS / TAPEITOUT
+              </span>
+            </div>
+            <div className="preloader-line w-0 h-[2px] bg-[#D4AF37] mt-3" />
+          </div>
         </div>
-      </div>
-
-      {/* 2. ROUTE PAGE TRANSITION PANELS */}
-      <div 
-        ref={transitionContainerRef} 
-        className="fixed inset-0 z-[9999] flex flex-col pointer-events-none select-none"
-      >
-        <div className="transition-panel w-full h-[51vh] bg-[#D4AF37]" style={{ transform: 'translateY(100%)' }} />
-        <div className="transition-panel w-full h-[51vh] bg-[#0F172A] -mt-1" style={{ transform: 'translateY(100%)' }} />
-      </div>
+      )}
 
       <Navigation />
       <main className="flex-1">

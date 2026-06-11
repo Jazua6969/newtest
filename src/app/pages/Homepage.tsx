@@ -100,9 +100,9 @@ export function Homepage() {
   };
 
   return (
-      <div className="font-ui bg-canvas-bone text-abyss-ink">
+      <div className="font-ui text-abyss-ink">
       {/* Hero Section */}
-      <section className="pt-24 pb-20 px-6 lg:px-8 text-center" style={{ background: 'var(--canvas-bone)' }}>
+      <section className="pt-24 pb-20 px-6 lg:px-8 text-center" style={{ background: 'transparent' }}>
         <div className="max-w-4xl mx-auto">
           <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium mb-8 border" style={{ background: 'rgba(212,175,55,0.08)', borderColor: 'rgba(212,175,55,0.2)', color: 'var(--meridian-gold)' }}>
             <span className="w-1.5 h-1.5 rounded-full bg-current animate-pulse" />
@@ -110,7 +110,7 @@ export function Homepage() {
           </div>
 
           <h1 className="mb-6 tracking-tight font-bold text-abyss-ink leading-tight text-5xl md:text-7xl">
-            Map the Unknown.
+            Map the <span className="highlight-word text-[#D4AF37]">Unknown.</span>
           </h1>
 
           <p className="max-w-2xl mx-auto mb-12 leading-relaxed" style={{ fontSize: '1.1875rem', color: '#475569' }}>
@@ -164,7 +164,7 @@ export function Homepage() {
             <div>
               <p className="text-xs font-semibold tracking-widest uppercase mb-3" style={{ color: 'var(--meridian-gold)' }}>Atlas Intelligence</p>
               <h2 className="mb-4 text-3xl font-display font-semibold text-abyss-ink">
-                From confusion to confidence in three steps.
+                From confusion to <span className="highlight-word text-[#D4AF37]">confidence</span> in three steps.
               </h2>
               <p className="leading-relaxed mb-8" style={{ color: '#64748B', fontSize: '0.9375rem' }}>
                 Atlas analyzes your implementation failure against a corpus of 47,000+ real tapeout scenarios. Every diagnosis includes evidence, reasoning, and an actionable fix.
@@ -270,12 +270,12 @@ export function Homepage() {
       </section>
 
       {/* Categories Grid */}
-      <section className="py-16 px-6 lg:px-8" style={{ background: 'var(--canvas-bone)' }}>
+      <section className="py-16 px-6 lg:px-8" style={{ background: 'transparent' }}>
         <div className="max-w-5xl mx-auto">
           <div className="flex items-end justify-between mb-10">
             <div>
               <p className="text-xs font-semibold tracking-widest uppercase mb-2" style={{ color: 'var(--meridian-gold)' }}>Failure Categories</p><h2 className="text-3xl font-display font-semibold text-abyss-ink">
-              Every stage. Every failure type.
+              Every stage. Every <span className="highlight-word text-[#D4AF37]">failure type.</span>
             </h2>
             </div>
             <Link to="/errors" className="text-sm font-medium flex items-center gap-1" style={{ color: '#64748B' }}>
@@ -288,7 +288,7 @@ export function Homepage() {
               <Link
                 key={cat.name}
                 to={`/errors?category=${cat.name.toLowerCase()}`}
-                className="group rounded-lg p-5 transition-all hover:-translate-y-0.5"
+                className="scroll-reveal-card group rounded-lg p-5 transition-all hover:-translate-y-0.5"
                 style={{ background: '#FFFFFF', border: '1px solid var(--stone-ridge)' }}
               >
                 <div className="text-2xl mb-3">{cat.icon}</div>
@@ -308,7 +308,7 @@ export function Homepage() {
             <div>
               <p className="text-xs font-semibold tracking-widest uppercase mb-2" style={{ color: 'var(--meridian-gold)' }}>Live Intelligence</p>
               <h2 style={{ fontFamily: 'var(--font-display)', fontSize: '1.75rem', fontWeight: 600, color: 'var(--abyss-ink)' }}>
-                Recent questions, mapped by Atlas.
+                Recent questions, mapped by <span className="highlight-word text-[#D4AF37]">Atlas.</span>
               </h2>
             </div>
             <Link to="/community" className="text-sm font-medium flex items-center gap-1" style={{ color: '#64748B' }}>
@@ -368,7 +368,7 @@ export function Homepage() {
               { label: 'Fixes Discovered', value: '8,934', icon: CheckCircle, color: '#10B981' },
               { label: 'Routes Charted', value: '31,204', icon: TrendingUp, color: '#8B5CF6' },
             ].map(stat => (
-              <div key={stat.label} className="text-center">
+              <div key={stat.label} className="scroll-reveal-card text-center">
                 <stat.icon className="w-6 h-6 mx-auto mb-3" style={{ color: stat.color }} />
                 <div className="mb-1" style={{ fontFamily: 'var(--font-display)', fontSize: '2rem', fontWeight: 700, color: '#FFFFFF' }}>
                   {stat.value}
@@ -381,10 +381,10 @@ export function Homepage() {
       </section>
 
       {/* CTA Banner */}
-      <section className="py-20 px-6 lg:px-8 text-center" style={{ background: 'var(--canvas-bone)', borderTop: '1px solid var(--stone-ridge)' }}>
+      <section className="py-20 px-6 lg:px-8 text-center" style={{ background: 'transparent', borderTop: '1px solid var(--stone-ridge)' }}>
         <div className="max-w-2xl mx-auto">
           <h2 className="mb-4" style={{ fontFamily: 'var(--font-display)', fontSize: '2.25rem', fontWeight: 700, color: 'var(--abyss-ink)' }}>
-            Ready to route your design?
+            Ready to route your <span className="highlight-word text-[#D4AF37]">design?</span>
           </h2>
           <p className="mb-8" style={{ color: '#64748B', fontSize: '1.0625rem' }}>
             Join 3,400+ engineers who use Atlas to navigate implementation complexity with confidence.

@@ -67,7 +67,7 @@ export function FailureExplanation() {
   const { errorName } = useParams();
 
   return (
-    <div style={{ background: 'var(--canvas-bone)', minHeight: '100vh', fontFamily: 'var(--font-ui)' }}>
+    <div style={{ background: 'transparent', minHeight: '100vh', fontFamily: 'var(--font-ui)' }}>
       {/* Hero */}
       <div style={{ background: 'var(--abyss-ink)' }}>
         <div className="max-w-5xl mx-auto px-6 lg:px-8 pt-12 pb-10">

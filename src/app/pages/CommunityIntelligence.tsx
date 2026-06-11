@@ -227,7 +227,7 @@ export function CommunityIntelligence() {
     });
 
   return (
-    <div style={{ background: 'var(--canvas-bone)', minHeight: '100vh', fontFamily: 'var(--font-ui)' }}>
+    <div style={{ background: 'transparent', minHeight: '100vh', fontFamily: 'var(--font-ui)' }}>
       {/* Header Banner */}
       <div style={{ background: 'var(--abyss-ink)' }}>
         <div className="max-w-6xl mx-auto px-6 lg:px-8 pt-12 pb-10">

@@ -79,7 +79,7 @@ export function LearningHub() {
   const [activeStage, setActiveStage] = useState('All');
 
   return (
-    <div style={{ background: 'var(--canvas-bone)', minHeight: '100vh', fontFamily: 'var(--font-ui)' }}>
+    <div style={{ background: 'transparent', minHeight: '100vh', fontFamily: 'var(--font-ui)' }}>
       {/* Header */}
       <div style={{ background: 'var(--abyss-ink)' }}>
         <div className="max-w-6xl mx-auto px-6 lg:px-8 pt-12 pb-10">
@@ -151,7 +151,7 @@ export function LearningHub() {
                 <Link
                   key={path.id}
                   to="#"
-                  className="group rounded-xl border p-6 transition-all hover:shadow-md block"
+                  className="scroll-reveal-card group rounded-xl border p-6 transition-all hover:shadow-md block"
                   style={{ background: '#FFFFFF', border: '1px solid var(--stone-ridge)' }}
                 >
                   <div className="flex items-start justify-between gap-3 mb-3">

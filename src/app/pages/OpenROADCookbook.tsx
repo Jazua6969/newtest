@@ -229,7 +229,7 @@ export function OpenROADCookbook() {
   const filtered = recipes.filter(r => activeCategory === 'All' || r.category === activeCategory);
 
   return (
-    <div style={{ background: 'var(--canvas-bone)', minHeight: '100vh', fontFamily: 'var(--font-ui)' }}>
+    <div style={{ background: 'transparent', minHeight: '100vh', fontFamily: 'var(--font-ui)' }}>
       {/* Header */}
       <div style={{ background: 'var(--abyss-ink)' }}>
         <div className="max-w-4xl mx-auto px-6 lg:px-8 pt-12 pb-10">

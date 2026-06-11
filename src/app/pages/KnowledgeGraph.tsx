@@ -66,7 +66,7 @@ export function KnowledgeGraph() {
   const zoom = (dir: 1 | -1) => setScale(s => Math.max(0.4, Math.min(2, s + dir * 0.15)));
 
   return (
-    <div style={{ background: 'var(--canvas-bone)', minHeight: '100vh', fontFamily: 'var(--font-ui)' }}>
+    <div style={{ background: 'transparent', minHeight: '100vh', fontFamily: 'var(--font-ui)' }}>
       {/* Header */}
       <div className="border-b" style={{ background: '#FFFFFF', borderColor: 'var(--stone-ridge)' }}>
         <div className="max-w-6xl mx-auto px-6 lg:px-8 py-6">

@@ -106,7 +106,7 @@ export function AtlasWorkspace() {
   };
 
   return (
-    <div className="h-[calc(100vh-64px)] flex overflow-hidden" style={{ background: 'var(--canvas-bone)' }}>
+    <div className="h-[calc(100vh-64px)] flex overflow-hidden" style={{ background: 'transparent' }}>
       {/* Left - Conversation History */}
       <aside className="w-56 border-r flex flex-col hidden md:flex" style={{ background: 'var(--abyss-ink)', borderColor: 'rgba(255,255,255,0.08)' }}>
         <div className="p-4 border-b" style={{ borderColor: 'rgba(255,255,255,0.08)' }}>

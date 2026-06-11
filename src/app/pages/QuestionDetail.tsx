@@ -84,7 +84,7 @@ export function QuestionDetail() {
 
   if (!question) {
     return (
-      <div style={{ background: 'var(--canvas-bone)', minHeight: '100vh', fontFamily: 'var(--font-ui)' }} className="flex flex-col items-center justify-center p-8">
+      <div style={{ background: 'transparent', minHeight: '100vh', fontFamily: 'var(--font-ui)' }} className="flex flex-col items-center justify-center p-8">
         <AlertTriangle className="w-16 h-16 text-amber-500 mb-4 animate-bounce" />
         <h2 className="text-2xl font-bold mb-2" style={{ fontFamily: 'var(--font-display)', color: 'var(--abyss-ink)' }}>
           Question Not Found
@@ -224,7 +224,7 @@ export function QuestionDetail() {
   };
 
   return (
-    <div style={{ background: 'var(--canvas-bone)', minHeight: '100vh', fontFamily: 'var(--font-ui)' }}>
+    <div style={{ background: 'transparent', minHeight: '100vh', fontFamily: 'var(--font-ui)' }}>
       <div className="max-w-6xl mx-auto px-6 lg:px-8 py-10">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           

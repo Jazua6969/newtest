@@ -82,7 +82,7 @@ export function Pricing() {
   const [annual, setAnnual] = useState(true);
 
   return (
-    <div style={{ background: 'var(--canvas-bone)', fontFamily: 'var(--font-ui)' }}>
+    <div style={{ background: 'transparent', fontFamily: 'var(--font-ui)' }}>
       {/* Header */}
       <section className="pt-20 pb-16 px-6 lg:px-8 text-center" style={{ background: 'var(--abyss-ink)' }}>
         <p className="text-xs font-semibold tracking-widest uppercase mb-3" style={{ color: 'var(--meridian-gold)' }}>Pricing</p>
@@ -122,7 +122,7 @@ export function Pricing() {
             {plans.map(plan => (
               <div
                 key={plan.name}
-                className="rounded-2xl overflow-hidden border"
+                className="scroll-reveal-card rounded-2xl overflow-hidden border"
                 style={{
                   border: plan.highlight ? '2px solid var(--meridian-gold)' : '1px solid var(--stone-ridge)',
                   background: plan.highlight ? 'var(--abyss-ink)' : '#FFFFFF',
@@ -235,7 +235,7 @@ export function Pricing() {
       </section>
 
       {/* FAQ */}
-      <section className="py-16 px-6 lg:px-8" style={{ background: 'var(--canvas-bone)' }}>
+      <section className="py-16 px-6 lg:px-8" style={{ background: 'transparent' }}>
         <div className="max-w-2xl mx-auto text-center">
           <h2 className="mb-4" style={{ fontFamily: 'var(--font-display)', fontSize: '1.75rem', fontWeight: 700, color: 'var(--abyss-ink)' }}>
             Questions? Talk to us.

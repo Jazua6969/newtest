@@ -56,7 +56,7 @@ export function DocsHub() {
   const [activeToc, setActiveToc] = useState('Overview');
 
   return (
-    <div style={{ background: 'var(--canvas-bone)', minHeight: '100vh', fontFamily: 'var(--font-ui)' }}>
+    <div style={{ background: 'transparent', minHeight: '100vh', fontFamily: 'var(--font-ui)' }}>
       {/* Doc Header */}
       <div className="border-b" style={{ background: '#FFFFFF', borderColor: 'var(--stone-ridge)' }}>
         <div className="max-w-7xl mx-auto px-6 lg:px-8 py-4">

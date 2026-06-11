@@ -20,7 +20,9 @@ export function Navigation() {
     <nav
       className="sticky top-0 z-50 border-b"
       style={{
-        background: 'var(--abyss-ink)',
+        background: 'rgba(15, 23, 42, 0.85)',
+        backdropFilter: 'blur(12px)',
+        WebkitBackdropFilter: 'blur(12px)',
         borderColor: 'rgba(255,255,255,0.08)',
         fontFamily: 'var(--font-ui)',
       }}

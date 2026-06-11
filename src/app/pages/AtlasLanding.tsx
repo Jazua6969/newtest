@@ -50,10 +50,10 @@ const tiers = [
 ];
 
 const capabilities = [
-  { icon: Map, title: 'Failure Pattern Recognition', desc: 'Matches your error against 47,000+ documented tapeout failures across tools, nodes, and PDKs.' },
-  { icon: Shield, title: 'Evidence-Based Diagnosis', desc: 'Every diagnosis includes confidence score, supporting evidence, and reasoning — not just an answer.' },
-  { icon: Zap, title: 'Actionable Recommendations', desc: 'Atlas tells you exactly what to do, with expected outcome and community-validated success rates.' },
-  { icon: CheckCircle, title: 'Continuous Learning', desc: 'Atlas improves with every diagnosis, incorporating community outcomes and expert validations.' },
+  { icon: Map, title: 'Fragmented Toolchains', desc: 'Atlas maps the entire RTL-to-GDSII flow, stitching Vivado, Yosys, OpenROAD, and Magic into a single diagnostic layer.' },
+  { icon: Shield, title: 'Discarded Telemetry', desc: 'Instead of discarding valuable logs and PDK reports, Atlas ingests telemetry from 47,000+ tapeouts to model failures.' },
+  { icon: Zap, title: 'Actionable Fixes', desc: 'Get precise SDC constraint edits, script corrections, and physical parameter tuning backed by confidence scores.' },
+  { icon: CheckCircle, title: 'Community Intelligence', desc: 'Share and reference physical design patterns securely and anonymously across teams with zero NDA or IP exposure.' },
 ];
 
 export function AtlasLanding() {
@@ -65,7 +65,7 @@ export function AtlasLanding() {
   }, []);
 
   return (
-    <div style={{ background: 'var(--canvas-bone)', fontFamily: 'var(--font-ui)' }}>
+    <div style={{ background: 'transparent', fontFamily: 'var(--font-ui)' }}>
       {/* Hero */}
       <section className="pt-24 pb-20 px-6 lg:px-8" style={{ background: 'var(--abyss-ink)' }}>
         <div className="max-w-5xl mx-auto text-center">
@@ -75,7 +75,7 @@ export function AtlasLanding() {
           </div>
 
           <h1 className="mb-6" style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(3rem, 7vw, 5rem)', fontWeight: 700, color: '#FFFFFF', lineHeight: 1.08 }}>
-            Atlas Maps The Unknown.
+            Atlas Maps The <span className="highlight-word text-[#D4AF37]">Unknown.</span>
           </h1>
 
           <p className="max-w-2xl mx-auto mb-10 leading-relaxed" style={{ fontSize: '1.125rem', color: 'rgba(243,242,237,0.65)' }}>
@@ -99,7 +99,7 @@ export function AtlasLanding() {
           <div className="text-center mb-14">
             <p className="text-xs font-semibold tracking-widest uppercase mb-3" style={{ color: 'var(--meridian-gold)' }}>How Atlas Works</p>
             <h2 style={{ fontFamily: 'var(--font-display)', fontSize: '2rem', fontWeight: 700, color: 'var(--abyss-ink)' }}>
-              Three states. One confident answer.
+              Three states. One <span className="highlight-word text-[#D4AF37]">confident answer.</span>
             </h2>
           </div>
 
@@ -133,12 +133,12 @@ export function AtlasLanding() {
       </section>
 
       {/* Architecture */}
-      <section className="py-20 px-6 lg:px-8" style={{ background: 'var(--canvas-bone)' }}>
+      <section className="py-20 px-6 lg:px-8" style={{ background: 'transparent' }}>
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-14">
             <p className="text-xs font-semibold tracking-widest uppercase mb-3" style={{ color: 'var(--meridian-gold)' }}>Atlas Architecture</p>
-            <h2 style={{ fontFamily: 'var(--font-display)', fontSize: '2rem', fontWeight: 700, color: 'var(--abyss-ink)' }}>
-              Three tiers. Zero proprietary exposure.
+             <h2 style={{ fontFamily: 'var(--font-display)', fontSize: '2rem', fontWeight: 700, color: 'var(--abyss-ink)' }}>
+              Three tiers. Zero <span className="highlight-word text-[#D4AF37]">proprietary exposure.</span>
             </h2>
             <p className="mt-3 max-w-xl mx-auto text-sm" style={{ color: '#64748B' }}>
               Atlas is built on layered knowledge — from public documentation to community intelligence — with strict privacy boundaries at every tier.
@@ -191,12 +191,12 @@ export function AtlasLanding() {
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-12">
             <h2 style={{ fontFamily: 'var(--font-display)', fontSize: '2rem', fontWeight: 700, color: 'var(--abyss-ink)' }}>
-              Atlas capabilities.
+              Atlas <span className="highlight-word text-[#D4AF37]">capabilities.</span>
             </h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {capabilities.map(cap => (
-              <div key={cap.title} className="flex gap-4 p-6 rounded-xl border" style={{ border: '1px solid var(--stone-ridge)', background: '#FAFAF7' }}>
+              <div key={cap.title} className="scroll-reveal-card flex gap-4 p-6 rounded-xl border" style={{ border: '1px solid var(--stone-ridge)', background: '#FAFAF7' }}>
                 <div className="w-10 h-10 rounded-lg flex items-center justify-center shrink-0" style={{ background: 'var(--secondary)' }}>
                   <cap.icon className="w-5 h-5" style={{ color: 'var(--abyss-ink)' }} />
                 </div>
@@ -214,7 +214,7 @@ export function AtlasLanding() {
       <section className="py-20 px-6 lg:px-8 text-center" style={{ background: 'var(--abyss-ink)' }}>
         <div className="max-w-2xl mx-auto">
           <h2 className="mb-4" style={{ fontFamily: 'var(--font-display)', fontSize: '2.25rem', fontWeight: 700, color: '#FFFFFF' }}>
-            Start routing with confidence.
+            Start routing with <span className="highlight-word text-[#D4AF37]">confidence.</span>
           </h2>
           <p className="mb-8" style={{ color: 'rgba(243,242,237,0.6)', fontSize: '1.0625rem' }}>
             Atlas is free for individuals. Join 3,400+ engineers who've already mapped the unknown.

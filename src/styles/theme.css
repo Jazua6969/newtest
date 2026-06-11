@@ -251,8 +251,25 @@
   }
 
   /* Preloader & Transition GPU Acceleration Helpers */
-  .preloader-curtain,
-  .transition-panel {
+  .preloader-curtain {
     will-change: transform;
   }
+}
+
+@media (hover: hover) and (pointer: fine) {
+  * {
+    cursor: none !important;
+  }
+}
+
+/* Phase 5: Global Title Reveal and Typing Cursor Styles */
+main h1:not([data-split="true"]),
+main h2:not([data-split="true"]) {
+  opacity: 0 !important;
+  visibility: hidden;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 0; }
+  50% { opacity: 1; }
 }
