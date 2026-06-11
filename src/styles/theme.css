@@ -249,4 +249,10 @@
     background: var(--meridian-gold);
     color: var(--abyss-ink);
   }
+
+  /* Preloader & Transition GPU Acceleration Helpers */
+  .preloader-curtain,
+  .transition-panel {
+    will-change: transform;
+  }
 }
