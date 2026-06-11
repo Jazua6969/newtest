@@ -37,6 +37,47 @@ const atlasStates = [
   { phase: 'Fixed', status: 'fixed' as const, desc: 'Root cause identified — recommended fix available' },
 ];
 
+function ScanningPlaceholder({ label }: { label: string }) {
+  return (
+    <div 
+      className="rounded-lg p-3 text-xs font-mono border border-dashed flex items-center justify-between h-[68px]" 
+      style={{ 
+        background: 'rgba(15, 23, 42, 0.02)', 
+        borderColor: 'var(--stone-ridge)',
+        color: '#94A3B8'
+      }}
+    >
+      <div className="flex items-center gap-2">
+        <span className="w-1.5 h-1.5 rounded-full bg-[#D4AF37] animate-ping" />
+        <span className="text-[10px] tracking-wider uppercase font-semibold">{label}</span>
+      </div>
+      <span className="text-[9px] font-bold text-[#D4AF37] opacity-75 animate-pulse">SCANNING...</span>
+    </div>
+  );
+}
+
+function ScanningFixPlaceholder({ label }: { label: string }) {
+  return (
+    <div 
+      className="rounded-lg p-4 text-xs font-mono border border-dashed flex flex-col justify-between h-[105px]" 
+      style={{ 
+        background: 'rgba(15, 23, 42, 0.02)', 
+        borderColor: 'var(--stone-ridge)',
+        color: '#94A3B8'
+      }}
+    >
+      <div className="flex items-center gap-2">
+        <span className="w-1.5 h-1.5 rounded-full bg-[#D4AF37] animate-ping" />
+        <span className="text-[10px] tracking-wider uppercase font-semibold">{label}</span>
+      </div>
+      <div className="w-full bg-gray-200 h-1 rounded-full overflow-hidden">
+        <div className="bg-[#D4AF37] h-full animate-pulse" style={{ width: '45%' }} />
+      </div>
+      <span className="text-[9px] font-bold text-[#D4AF37] opacity-75">AWAITING CLOCK SIGNALS...</span>
+    </div>
+  );
+}
+
 export function Homepage() {
   const [query, setQuery] = useState('');
   const [exampleIndex, setExampleIndex] = useState(0);
@@ -149,7 +190,7 @@ export function Homepage() {
                 <StatusBadge status={atlasStates[atlasPhase].status} pulse />
               </div>
 
-              <div className="p-5 space-y-4" style={{ background: '#FAFAF7' }}>
+              <div className="p-5 flex flex-col justify-between" style={{ background: '#FAFAF7', height: '390px' }}>
                 <div>
                   <p className="text-xs font-medium mb-1.5" style={{ color: '#94A3B8' }}>Query</p>
                   <p className="text-sm font-medium" style={{ color: 'var(--abyss-ink)', fontFamily: 'var(--font-ui)' }}>
@@ -161,36 +202,64 @@ export function Homepage() {
 
                 <div>
                   <p className="text-xs font-medium mb-1.5" style={{ color: '#94A3B8' }}>Atlas Status</p>
-                  <p className="text-sm" style={{ color: '#475569' }}>{atlasStates[atlasPhase].desc}</p>
+                  <p className="text-sm transition-all duration-300" style={{ color: '#475569' }}>{atlasStates[atlasPhase].desc}</p>
                 </div>
 
-                <div 
-                  className="overflow-hidden transition-all duration-700 ease-in-out"
-                  style={{ 
-                    maxHeight: atlasPhase >= 1 ? '160px' : '0px', 
-                    opacity: atlasPhase >= 1 ? 1 : 0,
-                  }}
-                >
-                  <div className="pt-2">
-                    <p className="text-xs font-medium mb-2" style={{ color: '#94A3B8' }}>Root Cause</p>
-                    <div className="rounded-lg p-3 text-sm" style={{ background: 'rgba(194,65,12,0.06)', border: '1px solid rgba(194,65,12,0.15)', color: 'var(--topography-rust)' }}>
+                {/* Root Cause Container (Fixed Height to prevent layout shift) */}
+                <div className="relative h-[76px]">
+                  {/* Placeholder (Phase 0) */}
+                  <div 
+                    className="absolute inset-x-0 top-0 transition-all duration-500 ease-in-out"
+                    style={{ 
+                      opacity: atlasPhase === 0 ? 1 : 0,
+                      transform: atlasPhase === 0 ? 'translateY(0)' : 'translateY(-10px)',
+                      pointerEvents: atlasPhase === 0 ? 'auto' : 'none'
+                    }}
+                  >
+                    <ScanningPlaceholder label="DECRYPTING FAILURE CELL SIGNATURE" />
+                  </div>
+                  {/* Real Content (Phase 1 & 2) */}
+                  <div 
+                    className="absolute inset-x-0 top-0 transition-all duration-500 ease-in-out"
+                    style={{ 
+                      opacity: atlasPhase >= 1 ? 1 : 0,
+                      transform: atlasPhase >= 1 ? 'translateY(0)' : 'translateY(10px)',
+                      pointerEvents: atlasPhase >= 1 ? 'auto' : 'none'
+                    }}
+                  >
+                    <p className="text-[10px] font-bold uppercase tracking-wider mb-1" style={{ color: '#94A3B8' }}>Root Cause</p>
+                    <div className="rounded-lg p-2.5 text-xs font-mono" style={{ background: 'rgba(194,65,12,0.06)', border: '1px solid rgba(194,65,12,0.15)', color: 'var(--topography-rust)' }}>
                       Clock source not propagated through synthesis — missing <code style={{ fontFamily: 'var(--font-mono)' }}>create_clock</code> constraint
                     </div>
                   </div>
                 </div>
 
-                <div 
-                  className="overflow-hidden transition-all duration-700 ease-in-out"
-                  style={{ 
-                    maxHeight: atlasPhase >= 2 ? '300px' : '0px', 
-                    opacity: atlasPhase >= 2 ? 1 : 0,
-                  }}
-                >
-                  <div className="pt-2 space-y-3">
+                {/* Recommended Fix Container (Fixed Height to prevent layout shift) */}
+                <div className="relative h-[130px]">
+                  {/* Placeholder (Phase 0 & 1) */}
+                  <div 
+                    className="absolute inset-x-0 top-0 transition-all duration-500 ease-in-out"
+                    style={{ 
+                      opacity: atlasPhase < 2 ? 1 : 0,
+                      transform: atlasPhase < 2 ? 'translateY(0)' : 'translateY(-10px)',
+                      pointerEvents: atlasPhase < 2 ? 'auto' : 'none'
+                    }}
+                  >
+                    <ScanningFixPlaceholder label={atlasPhase === 0 ? "RESOLVING RECOMMENDATION MATRIX" : "MAPPING TAXONOMY PATHS"} />
+                  </div>
+                  {/* Real Content (Phase 2) */}
+                  <div 
+                    className="absolute inset-x-0 top-0 transition-all duration-500 ease-in-out flex flex-col gap-2"
+                    style={{ 
+                      opacity: atlasPhase >= 2 ? 1 : 0,
+                      transform: atlasPhase >= 2 ? 'translateY(0)' : 'translateY(10px)',
+                      pointerEvents: atlasPhase >= 2 ? 'auto' : 'none'
+                    }}
+                  >
                     <ConfidenceMeter score={94} />
-                    <div className="rounded-lg p-3 text-sm" style={{ background: 'rgba(212,175,55,0.08)', border: '1px solid rgba(212,175,55,0.2)' }}>
-                      <p className="font-medium mb-1" style={{ color: 'var(--meridian-gold)' }}>Recommended Fix</p>
-                      <p style={{ color: '#475569' }}>Add clock constraint to SDC file before running CTS. Seen 2,847 times — 96% fix rate.</p>
+                    <div className="rounded-lg p-2.5 text-xs" style={{ background: 'rgba(212,175,55,0.08)', border: '1px solid rgba(212,175,55,0.2)' }}>
+                      <p className="font-semibold mb-0.5 text-[11px]" style={{ color: 'var(--meridian-gold)' }}>Recommended Fix</p>
+                      <p className="text-gray-600 leading-relaxed text-[10.5px]">Add clock constraint to SDC file before running CTS. Seen 2,847 times — 96% fix rate.</p>
                     </div>
                   </div>
                 </div>
