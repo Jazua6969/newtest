@@ -453,8 +453,8 @@ export function LoginSignup() {
             </div>
 
             {mode === 'login' && (
-              <div className="text-right" id="forgot-password">
-                <a href="/login#forgot-password" className="text-xs" style={{ color: 'rgba(243,242,237,0.4)' }}>Forgot password?</a>
+              <div className="text-right">
+                <a href="#" className="text-xs" style={{ color: 'rgba(243,242,237,0.4)' }}>Forgot password?</a>
               </div>
             )}
 
@@ -492,9 +492,9 @@ export function LoginSignup() {
           {mode === 'signup' && (
             <p className="text-center mt-4 text-xs" style={{ color: 'rgba(243,242,237,0.25)' }}>
               By creating an account, you agree to our{' '}
-              <a href="/terms" style={{ color: 'rgba(243,242,237,0.4)' }}>Terms of Service</a>
+              <a href="#" style={{ color: 'rgba(243,242,237,0.4)' }}>Terms of Service</a>
               {' '}and{' '}
-              <a href="/privacy" style={{ color: 'rgba(243,242,237,0.4)' }}>Privacy Policy</a>.
+              <a href="#" style={{ color: 'rgba(243,242,237,0.4)' }}>Privacy Policy</a>.
             </p>
           )}
         </div>

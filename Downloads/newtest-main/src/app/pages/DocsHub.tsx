@@ -1,69 +1,63 @@
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router';
-import { Search, ChevronRight, ExternalLink } from 'lucide-react';
-import docs, { type DocPageData, type DocLink, type DocSection } from './docs/content';
+import { Search, ChevronRight, ExternalLink, BookOpen, FileText, Code } from 'lucide-react';
 
-const categoriesOrder = [
-  'Getting Started',
-  'OpenROAD Flow',
-  'Sky130 PDK',
-  'GF180MCU PDK',
-  'Timing Analysis',
-  'Atlas API',
-  'Error Reference',
-];
+  const sections: Record<string, string[]> = {
+  'Getting Started': ['introduction-to-tapeitout', 'setting-up-openroad', 'openroad-cookbook', 'your-first-design-flow', 'atlas-quickstart'],
+  'OpenROAD Flow': ['rtl-synthesis-with-yosys', 'floorplanning', 'placement-with-replace', 'cts-with-tritoncts', 'routing-with-fastroute', 'signoff-with-opensta'],
+  'Sky130 PDK': ['sky130-overview', 'sky130-standard-cells', 'sky130-io-pads', 'sky130-sram-macros', 'sky130-design-rules'],
+  'GF180MCU PDK': ['gf180-overview', 'gf180-process-layers', 'gf180-device-types', 'gf180-design-rules'],
+  'Timing Analysis': ['understanding-sdc', 'setup-timing', 'hold-timing', 'clock-domain-crossing', 'multi-corner-analysis'],
+  'Atlas API': ['atlas-api-reference', 'atlas-api-authentication', 'atlas-api-endpoints', 'atlas-api-webhooks', 'atlas-api-rate-limits'],
+  'Error Reference': ['error-code-index', 'cts-errors', 'timing-errors', 'routing-errors', 'drc-lvs-errors'],
+};
 
-const defaultCategory = categoriesOrder[0];
+const currentDoc = {
+  title: 'Clock Tree Synthesis with TritonCTS',
+  breadcrumb: ['OpenROAD Flow', 'CTS with TritonCTS'],
+  lastUpdated: 'Dec 12, 2024',
+  readTime: '12 min read',
+  toc: [
+    'Overview',
+    'Prerequisites',
+    'Clock Definition (SDC)',
+    'Running CTS',
+    'Verifying the Clock Tree',
+    'Common Issues',
+    'Advanced Configuration',
+  ],
+  content: [
+    {
+      heading: 'Overview',
+      body: 'Clock Tree Synthesis (CTS) is the process of inserting buffers and inverters to distribute the clock signal across the entire design with minimal skew. TritonCTS is the CTS engine integrated into OpenROAD.',
+    },
+    {
+      heading: 'Prerequisites',
+      body: 'Before running CTS, ensure you have:\n• Completed global placement\n• Defined all clock sources in your SDC file using create_clock\n• Verified placement DRC passes with no critical violations',
+    },
+    {
+      heading: 'Clock Definition (SDC)',
+      body: 'The most common cause of CTS failure (CTS-0008) is a missing clock definition. Every clock in your design must be explicitly defined in the SDC file before CTS runs.',
+      code: '# Required: define your clock\ncreate_clock -name clk -period 10.0 [get_ports clk]\nset_clock_uncertainty 0.1 [get_clocks clk]\nset_clock_transition 0.15 [get_clocks clk]',
+      codeLanguage: 'sdc',
+    },
+    {
+      heading: 'Running CTS',
+      body: 'In OpenROAD, CTS is invoked via the clock_tree_synthesis command. The key parameters control buffer selection and target skew.',
+      code: 'clock_tree_synthesis \\\n  -root_buf sky130_fd_sc_hd__clkbuf_16 \\\n  -buf_list {sky130_fd_sc_hd__clkbuf_4 sky130_fd_sc_hd__clkbuf_8} \\\n  -wire_unit 20 \\\n  -clk_nets clk',
+      codeLanguage: 'tcl',
+    },
+  ],
+};
 
 export function DocsHub() {
-  const sections = useMemo(() => {
-    const result: Record<string, { slug: string; title: string }[]> = {};
-    categoriesOrder.forEach(category => {
-      result[category] = [];
-    });
-
-    Object.entries(docs).forEach(([slug, page]) => {
-      const category = page.breadcrumb?.[0] || defaultCategory;
-      if (!result[category]) {
-        result[category] = [];
-      }
-      result[category].push({ slug, title: page.title });
-    });
-
-    Object.values(result).forEach(group => {
-      group.sort((a, b) => a.title.localeCompare(b.title));
-    });
-
-    return result;
-  }, []);
-
   const [search, setSearch] = useState('');
-  const [activeSection, setActiveSection] = useState(defaultCategory);
-  const [activeDocSlug, setActiveDocSlug] = useState<string>(() => {
-    return sections[defaultCategory]?.[0]?.slug || Object.keys(docs)[0];
-  });
+  const [activeSection, setActiveSection] = useState('OpenROAD Flow');
   const [activeToc, setActiveToc] = useState('Overview');
-
-  const firstSlug = sections[defaultCategory]?.[0]?.slug || Object.keys(docs)[0];
-  const previewDoc: DocPageData = docs[activeDocSlug] || docs[firstSlug];
-
-  const filteredSections = useMemo(() => {
-    const query = search.trim().toLowerCase();
-    if (!query) {
-      return sections;
-    }
-
-    return Object.entries(sections).reduce((filtered, [category, pages]) => {
-      const matches = pages.filter(page => page.title.toLowerCase().includes(query));
-      if (matches.length > 0) {
-        filtered[category] = matches;
-      }
-      return filtered;
-    }, {} as Record<string, { slug: string; title: string }[]>);
-  }, [search, sections]);
 
   return (
     <div style={{ background: 'transparent', minHeight: '100vh', fontFamily: 'var(--font-ui)' }}>
+      {/* Doc Header */}
       <div className="border-b" style={{ background: '#FFFFFF', borderColor: 'var(--stone-ridge)' }}>
         <div className="max-w-7xl mx-auto px-6 lg:px-8 py-4">
           <div className="flex items-center justify-between gap-4">
@@ -88,7 +82,7 @@ export function DocsHub() {
             </div>
             <div className="flex items-center gap-3">
               <Link to="/docs/openroad-cookbook" className="text-sm" style={{ color: '#64748B' }}>OpenROAD Cookbook</Link>
-              <a href="https://github.com" target="_blank" rel="noreferrer noopener" className="flex items-center gap-1 text-sm" style={{ color: '#64748B' }}>
+              <a href="#" className="flex items-center gap-1 text-sm" style={{ color: '#64748B' }}>
                 GitHub <ExternalLink className="w-3 h-3" />
               </a>
             </div>
@@ -97,8 +91,9 @@ export function DocsHub() {
       </div>
 
       <div className="max-w-7xl mx-auto px-0 flex" style={{ minHeight: 'calc(100vh - 120px)' }}>
+        {/* Left Sidebar */}
         <aside className="w-60 shrink-0 border-r overflow-y-auto sticky top-16 self-start" style={{ borderColor: 'var(--stone-ridge)', height: 'calc(100vh - 120px)', background: '#FAFAF7', paddingTop: '1.5rem', paddingBottom: '2rem' }}>
-          {Object.entries(filteredSections).map(([section, pages]) => (
+          {Object.entries(sections).map(([section, pages]) => (
             <div key={section} className="mb-1 px-4">
               <button
                 className="w-full flex items-center justify-between py-1.5 text-xs font-semibold text-left"
@@ -110,19 +105,19 @@ export function DocsHub() {
               </button>
               {activeSection === section && (
                 <div className="ml-2 mt-1 mb-2 space-y-0.5">
-                  {pages.map(page => (
+                  {pages.map(slug => (
                     <Link
-                      key={page.slug}
-                      to={`/docs/${page.slug}`}
-                      onClick={() => setActiveDocSlug(page.slug)}
+                      key={slug}
+                      to={`/docs/${slug}`}
                       className="w-full text-left text-xs px-3 py-1.5 rounded transition-colors block"
                       style={{
-                        color: page.slug === activeDocSlug ? 'var(--abyss-ink)' : '#64748B',
-                        background: page.slug === activeDocSlug ? '#FFFFFF' : 'transparent',
-                        fontWeight: page.slug === activeDocSlug ? 500 : 400,
+                        color: slug === 'cts-with-tritoncts' ? 'var(--abyss-ink)' : '#64748B',
+                        background: slug === 'cts-with-tritoncts' ? '#FFFFFF' : 'transparent',
+                        fontWeight: slug === 'cts-with-tritoncts' ? 500 : 400,
                       }}
                     >
-                      {page.title}
+                      {/* Display title by replacing dashes with spaces and capitalizing */}
+                      {slug.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase())}
                     </Link>
                   ))}
                 </div>
@@ -131,10 +126,12 @@ export function DocsHub() {
           ))}
         </aside>
 
+        {/* Center - Doc Content */}
         <main className="flex-1 min-w-0 px-10 py-10">
+          {/* Breadcrumb */}
           <div className="flex items-center gap-2 text-xs mb-6" style={{ color: '#94A3B8' }}>
-            {previewDoc.breadcrumb.map((crumb, i) => (
-              <span key={`${crumb}-${i}`} className="flex items-center gap-2">
+            {currentDoc.breadcrumb.map((crumb, i) => (
+              <span key={crumb} className="flex items-center gap-2">
                 {i > 0 && <ChevronRight className="w-3 h-3" />}
                 <span>{crumb}</span>
               </span>
@@ -143,19 +140,20 @@ export function DocsHub() {
 
           <div className="flex items-start gap-4 mb-2">
             <h1 style={{ fontFamily: 'var(--font-display)', fontSize: '2rem', fontWeight: 700, color: 'var(--abyss-ink)' }}>
-              {previewDoc.title}
+              {currentDoc.title}
             </h1>
           </div>
 
           <div className="flex items-center gap-4 mb-8 text-xs" style={{ color: '#94A3B8' }}>
-            <span>Updated {previewDoc.lastUpdated}</span>
+            <span>Updated {currentDoc.lastUpdated}</span>
             <span>·</span>
-            <span>{previewDoc.readTime}</span>
+            <span>{currentDoc.readTime}</span>
           </div>
 
+          {/* Content */}
           <div className="space-y-8 max-w-2xl">
-            {previewDoc.content.map((section: DocSection, i: number) => (
-              <div key={i} id={section.heading.toLowerCase().replace(/\s/g, '-') }>
+            {currentDoc.content.map((section, i) => (
+              <div key={i} id={section.heading.toLowerCase().replace(/\s/g, '-')}>
                 <h2 className="mb-3" style={{ fontFamily: 'var(--font-display)', fontSize: '1.25rem', fontWeight: 600, color: 'var(--abyss-ink)' }}>
                   {section.heading}
                 </h2>
@@ -176,20 +174,22 @@ export function DocsHub() {
             ))}
           </div>
 
+          {/* Navigation */}
           <div className="flex items-center justify-between mt-16 pt-8 border-t max-w-2xl" style={{ borderColor: 'var(--stone-ridge)' }}>
-            <Link to="/docs/placement-with-replace" className="flex items-center gap-2 text-sm" style={{ color: '#64748B' }}>
+            <Link to="#" className="flex items-center gap-2 text-sm" style={{ color: '#64748B' }}>
               ← Placement with RePlAce
             </Link>
-            <Link to="/docs/routing-with-fastroute" className="flex items-center gap-2 text-sm" style={{ color: '#64748B' }}>
+            <Link to="#" className="flex items-center gap-2 text-sm" style={{ color: '#64748B' }}>
               Routing with FastRoute →
             </Link>
           </div>
         </main>
 
+        {/* Right - TOC */}
         <aside className="w-52 shrink-0 border-l hidden lg:block sticky top-16 self-start" style={{ borderColor: 'var(--stone-ridge)', height: 'calc(100vh - 120px)', paddingTop: '1.5rem', paddingLeft: '1.25rem', paddingRight: '1.25rem' }}>
           <p className="text-xs font-semibold uppercase tracking-widest mb-4" style={{ color: '#94A3B8' }}>On This Page</p>
           <div className="space-y-1">
-            {previewDoc.toc.map((item: string) => (
+            {currentDoc.toc.map(item => (
               <button
                 key={item}
                 onClick={() => setActiveToc(item)}
@@ -207,9 +207,9 @@ export function DocsHub() {
 
           <div className="mt-8 pt-6 border-t" style={{ borderColor: 'var(--stone-ridge)' }}>
             <p className="text-xs font-semibold uppercase tracking-widest mb-3" style={{ color: '#94A3B8' }}>Related</p>
-            {previewDoc.related?.map((link: DocLink) => (
-              <Link key={link.title} to={link.href} className="block text-xs py-1.5 hover:underline" style={{ color: '#64748B' }}>
-                {link.title}
+            {['SDC Constraint Guide', 'OpenROAD API Docs', 'CTS Error Reference'].map(page => (
+              <Link key={page} to="#" className="block text-xs py-1.5 hover:underline" style={{ color: '#64748B' }}>
+                {page}
               </Link>
             ))}
           </div>

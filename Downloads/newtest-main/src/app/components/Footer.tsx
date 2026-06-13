@@ -15,15 +15,15 @@ const footerLinks = {
     { label: 'Failure Atlas', href: '/errors' },
   ],
   Company: [
-    { label: 'About TapeItOut', href: '/atlas-platform' },
+    { label: 'About TapeItOut', href: '#' },
     { label: 'Pricing', href: '/pricing' },
-    { label: 'Blog', href: 'https://blog.tapeitout.ai' },
-    { label: 'Careers', href: 'https://tapeitout.ai/careers' },
+    { label: 'Blog', href: '#' },
+    { label: 'Careers', href: '#' },
   ],
   Legal: [
-    { label: 'Privacy Policy', href: '/privacy' },
-    { label: 'Terms of Service', href: '/terms' },
-    { label: 'Cookie Policy', href: '/cookies' },
+    { label: 'Privacy Policy', href: '#' },
+    { label: 'Terms of Service', href: '#' },
+    { label: 'Cookie Policy', href: '#' },
   ],
 };
 
@@ -47,19 +47,8 @@ export function Footer() {
               Atlas maps the unknown. We help semiconductor engineers navigate RTL-to-GDSII with confidence.
             </p>
             <div className="flex items-center gap-3">
-              {[
-                { Icon: Github, href: 'https://github.com/tapeitout' },
-                { Icon: Twitter, href: 'https://twitter.com/tapeitout' },
-                { Icon: MessageSquare, href: 'mailto:hello@tapeitout.com' },
-              ].map(({ Icon, href }, i) => (
-                <a
-                  key={i}
-                  href={href}
-                  target={href.startsWith('http') ? '_blank' : undefined}
-                  rel={href.startsWith('http') ? 'noreferrer noopener' : undefined}
-                  className="w-8 h-8 rounded flex items-center justify-center transition-colors"
-                  style={{ background: 'rgba(255,255,255,0.06)', color: 'rgba(243,242,237,0.5)' }}
-                >
+              {[Github, Twitter, MessageSquare].map((Icon, i) => (
+                <a key={i} href="#" className="w-8 h-8 rounded flex items-center justify-center transition-colors" style={{ background: 'rgba(255,255,255,0.06)', color: 'rgba(243,242,237,0.5)' }}>
                   <Icon className="w-4 h-4" />
                 </a>
               ))}
@@ -75,15 +64,9 @@ export function Footer() {
               <ul className="space-y-3">
                 {links.map((link) => (
                   <li key={link.label}>
-                    {link.href.startsWith('http') ? (
-                      <a href={link.href} target="_blank" rel="noreferrer noopener" className="text-sm transition-colors" style={{ color: 'rgba(243,242,237,0.55)' }}>
-                        {link.label}
-                      </a>
-                    ) : (
-                      <Link to={link.href} className="text-sm transition-colors" style={{ color: 'rgba(243,242,237,0.55)' }}>
-                        {link.label}
-                      </Link>
-                    )}
+                    <Link to={link.href} className="text-sm transition-colors" style={{ color: 'rgba(243,242,237,0.55)' }}>
+                      {link.label}
+                    </Link>
                   </li>
                 ))}
               </ul>

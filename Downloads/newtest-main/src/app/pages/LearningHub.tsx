@@ -1,14 +1,6 @@
-import { useEffect, useMemo, useState } from 'react';
-import { Link, useNavigate } from 'react-router';
+import { useState } from 'react';
+import { Link } from 'react-router';
 import { BookOpen, Clock, CheckCircle, ArrowRight, Play, Lock, Star } from 'lucide-react';
-import {
-  learningPaths,
-  loadLearningProgress,
-  saveLearningProgress,
-  getPathBySlug,
-  getNextUnfinishedModule,
-  getPathProgress,
-} from '../data/learningPaths';
 
 const stages = [
   { name: 'RTL Design', icon: '⟨/⟩', modules: 8, duration: '4h 20m', color: '#8B5CF6' },
@@ -19,6 +11,53 @@ const stages = [
   { name: 'Routing', icon: '↗', modules: 14, duration: '7h 20m', color: '#EF4444' },
   { name: 'Signoff', icon: '✓', modules: 11, duration: '6h 00m', color: '#06B6D4' },
   { name: 'Tapeout', icon: '◎', modules: 6, duration: '3h 10m', color: 'var(--meridian-gold)' },
+];
+
+const learningPaths = [
+  {
+    id: 1,
+    title: 'OpenROAD Complete Flow',
+    desc: 'Master the full RTL-to-GDSII flow using the OpenROAD open-source EDA toolchain.',
+    level: 'Intermediate',
+    modules: 24,
+    duration: '12h',
+    students: 1847,
+    progress: 35,
+    recommended: true,
+  },
+  {
+    id: 2,
+    title: 'Timing Closure Mastery',
+    desc: 'Systematic approach to identifying and fixing setup, hold, and clock timing violations.',
+    level: 'Advanced',
+    modules: 18,
+    duration: '9h',
+    students: 923,
+    progress: 0,
+    recommended: false,
+  },
+  {
+    id: 3,
+    title: 'Sky130 Design Fundamentals',
+    desc: 'Complete guide to designing for the SkyWater 130nm process using open-source tools.',
+    level: 'Beginner',
+    modules: 15,
+    duration: '7h 30m',
+    students: 3421,
+    progress: 80,
+    recommended: false,
+  },
+  {
+    id: 4,
+    title: 'Physical Design Troubleshooting',
+    desc: 'Learn to diagnose and fix the most common RTL-to-GDSII implementation failures.',
+    level: 'Intermediate',
+    modules: 20,
+    duration: '10h',
+    students: 2104,
+    progress: 0,
+    recommended: true,
+  },
 ];
 
 const featuredModules = [
@@ -38,34 +77,6 @@ const levelColors = {
 
 export function LearningHub() {
   const [activeStage, setActiveStage] = useState('All');
-  const [progress, setProgress] = useState(() => loadLearningProgress());
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    saveLearningProgress(progress);
-  }, [progress]);
-
-  const activePath = useMemo(() => getPathBySlug(progress.activeLearningPath) ?? learningPaths[0], [progress.activeLearningPath]);
-  const continueModule = useMemo(() => getNextUnfinishedModule(activePath, progress) ?? activePath.modules[0], [activePath, progress]);
-  const activePathProgress = useMemo(() => getPathProgress(activePath, progress), [activePath, progress]);
-
-  const filteredFeaturedModules = useMemo(() => {
-    if (activeStage === 'All') return featuredModules;
-    return featuredModules.filter(module => module.stage === activeStage);
-  }, [activeStage]);
-
-  const handlePathSelect = (pathSlug: string) => {
-    const path = getPathBySlug(pathSlug);
-    if (!path) return;
-    const nextModule = getNextUnfinishedModule(path, progress) ?? path.modules[0];
-    const updatedProgress = {
-      ...progress,
-      activeLearningPath: pathSlug,
-      lastVisitedModule: `${pathSlug}/${nextModule.slug}`,
-    };
-    setProgress(updatedProgress);
-    navigate(`/learn/${pathSlug}/${nextModule.slug}`);
-  };
 
   return (
     <div style={{ background: 'transparent', minHeight: '100vh', fontFamily: 'var(--font-ui)' }}>
@@ -82,20 +93,19 @@ export function LearningHub() {
         </div>
       </div>
 
+      {/* Progress Banner (if logged in) */}
       <div className="border-b" style={{ background: '#FFFFFF', borderColor: 'var(--stone-ridge)' }}>
         <div className="max-w-6xl mx-auto px-6 lg:px-8 py-5">
-          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex items-center justify-between gap-4">
             <div>
               <p className="text-sm font-semibold" style={{ color: 'var(--abyss-ink)' }}>Your Progress</p>
-              <p className="text-xs" style={{ color: '#64748B' }}>{activePath.title} · {activePathProgress}% complete</p>
+              <p className="text-xs" style={{ color: '#64748B' }}>Sky130 Design Fundamentals · 80% complete</p>
             </div>
             <div className="flex items-center gap-4">
               <div className="w-48 h-1.5 rounded-full" style={{ background: 'var(--secondary)' }}>
-                <div className="h-1.5 rounded-full" style={{ width: `${activePathProgress}%`, background: 'var(--meridian-gold)' }} />
+                <div className="h-1.5 rounded-full" style={{ width: '80%', background: 'var(--meridian-gold)' }} />
               </div>
-              <Link to={`/learn/${activePath.slug}/${continueModule.slug}`} className="text-sm font-medium" style={{ color: 'var(--meridian-gold)' }}>
-                Continue →
-              </Link>
+              <Link to="#" className="text-sm font-medium" style={{ color: 'var(--meridian-gold)' }}>Continue →</Link>
             </div>
           </div>
         </div>
@@ -134,16 +144,14 @@ export function LearningHub() {
             <h2 style={{ fontFamily: 'var(--font-display)', fontSize: '1.25rem', fontWeight: 600, color: 'var(--abyss-ink)' }}>Atlas Suggested Learning Paths</h2>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-5" id="learning-paths">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             {learningPaths.map(path => {
               const level = levelColors[path.level as keyof typeof levelColors];
-              const progressValue = getPathProgress(path, progress);
-              const nextModule = getNextUnfinishedModule(path, progress) ?? path.modules[0];
               return (
-                <button
-                  key={path.slug}
-                  onClick={() => handlePathSelect(path.slug)}
-                  className="scroll-reveal-card group rounded-xl border p-6 transition-all hover:shadow-md text-left"
+                <Link
+                  key={path.id}
+                  to="#"
+                  className="scroll-reveal-card group rounded-xl border p-6 transition-all hover:shadow-md block"
                   style={{ background: '#FFFFFF', border: '1px solid var(--stone-ridge)' }}
                 >
                   <div className="flex items-start justify-between gap-3 mb-3">
@@ -160,22 +168,22 @@ export function LearningHub() {
                   </div>
 
                   <h3 className="font-semibold mb-2 group-hover:underline" style={{ color: 'var(--abyss-ink)', fontSize: '1rem' }}>{path.title}</h3>
-                  <p className="text-sm leading-relaxed mb-4" style={{ color: '#64748B' }}>{path.description}</p>
+                  <p className="text-sm leading-relaxed mb-4" style={{ color: '#64748B' }}>{path.desc}</p>
 
                   <div className="flex items-center gap-4 mb-4 text-xs" style={{ color: '#94A3B8' }}>
-                    <span className="flex items-center gap-1"><BookOpen className="w-3.5 h-3.5" /> {path.modules.length} modules</span>
+                    <span className="flex items-center gap-1"><BookOpen className="w-3.5 h-3.5" /> {path.modules} modules</span>
                     <span className="flex items-center gap-1"><Clock className="w-3.5 h-3.5" /> {path.duration}</span>
-                    <span className="flex items-center gap-1"><CheckCircle className="w-3.5 h-3.5" /> {(path.modules.length * 40).toLocaleString()} mins est.</span>
+                    <span className="flex items-center gap-1"><CheckCircle className="w-3.5 h-3.5" /> {path.students.toLocaleString()} enrolled</span>
                   </div>
 
-                  {progressValue > 0 ? (
+                  {path.progress > 0 ? (
                     <div>
                       <div className="flex justify-between text-xs mb-1.5">
                         <span style={{ color: '#64748B' }}>Progress</span>
-                        <span style={{ color: 'var(--meridian-gold)' }}>{progressValue}%</span>
+                        <span style={{ color: 'var(--meridian-gold)' }}>{path.progress}%</span>
                       </div>
                       <div className="h-1.5 rounded-full" style={{ background: 'var(--secondary)' }}>
-                        <div className="h-1.5 rounded-full transition-all" style={{ width: `${progressValue}%`, background: 'var(--meridian-gold)' }} />
+                        <div className="h-1.5 rounded-full transition-all" style={{ width: `${path.progress}%`, background: 'var(--meridian-gold)' }} />
                       </div>
                     </div>
                   ) : (
@@ -183,7 +191,7 @@ export function LearningHub() {
                       Start path <ArrowRight className="w-3.5 h-3.5" />
                     </div>
                   )}
-                </button>
+                </Link>
               );
             })}
           </div>
@@ -192,11 +200,11 @@ export function LearningHub() {
         {/* Featured Modules */}
         <div>
           <h2 className="mb-6" style={{ fontFamily: 'var(--font-display)', fontSize: '1.25rem', fontWeight: 600, color: 'var(--abyss-ink)' }}>Featured Modules</h2>
-          <div id="featured-modules" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {filteredFeaturedModules.map((module, i) => (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {featuredModules.map((module, i) => (
               <Link
                 key={i}
-                to="/learn#featured-modules"
+                to="#"
                 className="group flex items-center gap-4 p-4 rounded-xl border transition-all hover:shadow-md"
                 style={{ background: '#FFFFFF', border: '1px solid var(--stone-ridge)' }}
               >

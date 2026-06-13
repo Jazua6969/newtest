@@ -1,26 +1,4 @@
-export interface DocSection {
-  heading: string;
-  body: string;
-  code?: string;
-  codeLanguage?: string;
-}
-
-export interface DocLink {
-  title: string;
-  href: string;
-}
-
-export interface DocPageData {
-  title: string;
-  breadcrumb: string[];
-  lastUpdated: string;
-  readTime: string;
-  toc: string[];
-  content: DocSection[];
-  related?: DocLink[];
-}
-
-const docs: Record<string, DocPageData> = {
+const docs: Record<string, any> = {
   'cts-with-tritoncts': {
     title: 'Clock Tree Synthesis with TritonCTS',
     breadcrumb: ['OpenROAD Flow', 'CTS with TritonCTS'],
