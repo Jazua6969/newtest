@@ -7,6 +7,7 @@ import { FailureExplanation } from './pages/FailureExplanation';
 import { AtlasWorkspace } from './pages/AtlasWorkspace';
 import { ErrorEncyclopedia } from './pages/ErrorEncyclopedia';
 import { LearningHub } from './pages/LearningHub';
+import { LearningModulePage } from './pages/LearningModulePage';
 import { KnowledgeGraph } from './pages/KnowledgeGraph';
 import { CommunityIntelligence } from './pages/CommunityIntelligence';
 import { DocsHub } from './pages/DocsHub';
@@ -14,6 +15,9 @@ import { DocPage } from './pages/DocPage';
 import { OpenROADCookbook } from './pages/OpenROADCookbook';
 import { AtlasLanding } from './pages/AtlasLanding';
 import { Pricing } from './pages/Pricing';
+import { Privacy } from './pages/Privacy';
+import { Terms } from './pages/Terms';
+import { Cookies } from './pages/Cookies';
 import { LoginSignup } from './pages/LoginSignup';
 
 export const router = createBrowserRouter([
@@ -28,6 +32,7 @@ export const router = createBrowserRouter([
       { path: 'atlas', Component: AtlasWorkspace },
       { path: 'errors', Component: ErrorEncyclopedia },
       { path: 'learn', Component: LearningHub },
+      { path: 'learn/:pathSlug/:moduleSlug', Component: LearningModulePage },
       { path: 'knowledge-graph', Component: KnowledgeGraph },
       { path: 'community', Component: CommunityIntelligence },
       { path: 'docs', Component: DocsHub },
@@ -35,6 +40,9 @@ export const router = createBrowserRouter([
       { path: 'docs/openroad-cookbook', Component: OpenROADCookbook },
       { path: 'atlas-platform', Component: AtlasLanding },
       { path: 'pricing', Component: Pricing },
+      { path: 'privacy', Component: Privacy },
+      { path: 'terms', Component: Terms },
+      { path: 'cookies', Component: Cookies },
       { path: 'login', Component: LoginSignup },
     ],
   },
